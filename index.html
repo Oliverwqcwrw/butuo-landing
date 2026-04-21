@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>不拖 — 你的极简待办工具 | 免费 iOS App</title>
+  <meta name="description" content="不拖是一款极简 iOS 待办 App。没有标签、没有优先级、没有云同步。只需写下来，然后划掉它。完全本地存储，免费下载。" />
+  <meta name="keywords" content="极简待办,todo app,不拖,iOS待办,无广告待办,本地待办,简单任务管理,免费todo,极简效率" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="不拖 — 极简待办 iOS App" />
+  <meta property="og:description" content="没有标签，没有优先级，没有同步。只需写下来，然后划掉它。" />
+  <meta property="og:url" content="https://oliverwqcwrw.github.io/butuo-landing/" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="不拖 — 极简待办 iOS App" />
+  <meta name="twitter:description" content="没有账号，没有服务器，没有广告。你的清单只在你的手机里。" />
+  <!-- Canonical -->
+  <link rel="canonical" href="https://oliverwqcwrw.github.io/butuo-landing/" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f0f10;
+      --surface: #1a1a1c;
+      --border: #2a2a2e;
+      --accent: #a78bfa;
+      --accent2: #7c3aed;
+      --text: #f0f0f2;
+      --muted: #888892;
+      --green: #4ade80;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Nav */
+    nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(15,15,16,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-logo { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-cta {
+      background: var(--accent2);
+      color: #fff;
+      text-decoration: none;
+      padding: 9px 22px;
+      border-radius: 22px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); }
+
+    /* Hero */
+    .hero {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 100px 24px 80px;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(167,139,250,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(167,139,250,0.25);
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 42px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent2);
+      color: #fff;
+      text-decoration: none;
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+    }
+    .hero-cta:hover {
+      background: var(--accent);
+      box-shadow: 0 6px 32px rgba(167,139,250,0.45);
+      transform: translateY(-2px);
+    }
+    .hero-sub {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Phone mockup area */
+    .mockup-area {
+      max-width: 400px;
+      margin: 60px auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      text-align: left;
+    }
+    .mockup-bar {
+      width: 60px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 28px;
+    }
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+      transition: opacity 0.3s;
+    }
+    .todo-item:last-child { border-bottom: none; }
+    .todo-circle {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .todo-item.done .todo-circle {
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .todo-item.done .todo-circle::after {
+      content: "✓";
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .todo-item.done .todo-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    /* Features */
+    .section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+    .section-label {
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .section h2 {
+      text-align: center;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 60px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(167,139,250,0.4);
+      transform: translateY(-3px);
+    }
+    .feature-icon { font-size: 2rem; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* Philosophy */
+    .philosophy {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .philosophy .section { padding: 80px 24px; }
+    .quote-block {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .quote-block blockquote {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 500;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .quote-block blockquote em { color: var(--accent); font-style: normal; }
+
+    /* Compare */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    .compare-table th {
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-weight: 700;
+      text-align: center;
+    }
+    .compare-table th:first-child { text-align: left; }
+    .compare-table th.highlight { color: var(--accent); background: rgba(167,139,250,0.08); }
+    .compare-table td {
+      padding: 13px 20px;
+      border: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+    }
+    .compare-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
+    .compare-table td.highlight { color: var(--green); font-weight: 700; }
+    .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .yes { color: var(--green); }
+    .no { color: #f87171; }
+
+    /* FAQ */
+    .faq-list { max-width: 640px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 22px 0;
+    }
+    .faq-item h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 10px; }
+    .faq-item p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+    /* CTA Bottom */
+    .cta-bottom {
+      text-align: center;
+      padding: 80px 24px 60px;
+      background: linear-gradient(180deg, transparent, rgba(124,58,237,0.06));
+    }
+    .cta-bottom h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+    .cta-bottom p { color: var(--muted); margin-bottom: 36px; font-size: 1rem; }
+    .appstore-btn {
+      display: inline-block;
+      background: #000;
+      border: 1px solid #333;
+      border-radius: 14px;
+      padding: 14px 28px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+    }
+    .appstore-btn:hover { border-color: var(--accent); }
+    .appstore-btn strong { display: block; font-size: 1.1rem; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      footer { padding: 24px 20px; justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">不拖</div>
+  <a class="nav-cta" href="https://apps.apple.com/app/id6761042128" target="_blank">免费下载</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge">🍎 免费 · iOS App</div>
+  <h1>待办这件事，<span>本该很简单</span></h1>
+  <p>没有账号，没有服务器，没有广告。只需写下来，然后划掉它。就这样。</p>
+  <a class="hero-cta" href="https://apps.apple.com/app/id6761042128" target="_blank">
+    <span>🍎</span> 在 App Store 免费下载
+  </a>
+  <p class="hero-sub">适用于 iPhone · iPad · 无需注册 · 数据完全本地</p>
+
+  <!-- Mockup -->
+  <div class="mockup-area">
+    <div class="mockup-bar"></div>
+    <div class="todo-item done">
+      <div class="todo-circle"></div>
+      <span class="todo-text">买牛奶</span>
+    </div>
+    <div class="todo-item done">
+      <div class="todo-circle"></div>
+      <span class="todo-text">回那封邮件</span>
+    </div>
+    <div class="todo-item">
+      <div class="todo-circle"></div>
+      <span class="todo-text">开始那件一直想做的事</span>
+    </div>
+    <div class="todo-item">
+      <div class="todo-circle"></div>
+      <span class="todo-text">早点睡</span>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <div class="section-label">核心特性</div>
+  <h2>去掉一切不必要的东西</h2>
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>数据只在你手机里</h3>
+      <p>没有服务器，没有同步，没有任何人能看到你的清单。你的事，只有你自己知道。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✨</div>
+      <h3>极简，真的极简</h3>
+      <p>没有标签、没有优先级、没有周复盘提醒你"你又拖了"。只有一件事：写下来，划掉它。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>打开即用</h3>
+      <p>不需要注册，不需要登录，不需要引导教程。打开 App，开始记事。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>专注当下</h3>
+      <p>好的工具不该让你花时间管理工具本身。它安静地待在那里，等你想起来。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚫</div>
+      <h3>零广告</h3>
+      <p>没有推送通知轰炸，没有追踪脚本，没有任何打扰你的东西。纯粹的工具。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💸</div>
+      <h3>完全免费</h3>
+      <p>没有订阅，没有内购，没有"解锁完整功能"。下载，直接用，就这样。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Philosophy -->
+<div class="philosophy">
+  <section class="section">
+    <div class="quote-block">
+      <div class="section-label">我们的理念</div>
+      <blockquote>
+        每个人心里都有一张永远写不完的清单。<br/>
+        它们安静地堆在脑子里，像压着的石头，<br/>
+        让人觉得忙碌，却又觉得<em>什么都没做完</em>。
+      </blockquote>
+      <blockquote>
+        不拖，是一张干净的纸。<br/>
+        划掉的那一刻，比任何勋章都<em>踏实</em>。
+      </blockquote>
+    </div>
+  </section>
+</div>
+
+<!-- Compare -->
+<section class="section">
+  <div class="section-label">横向对比</div>
+  <h2>为什么选择不拖？</h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>功能</th>
+        <th class="highlight">不拖 ✦</th>
+        <th>Todoist</th>
+        <th>Things 3</th>
+        <th>Apple 提醒事项</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>完全免费</td>
+        <td class="highlight yes">✓</td>
+        <td class="no">✗ 订阅制</td>
+        <td class="no">✗ 付费买断</td>
+        <td class="yes">✓</td>
+      </tr>
+      <tr>
+        <td>无需注册账号</td>
+        <td class="highlight yes">✓</td>
+        <td class="no">✗</td>
+        <td class="no">✗</td>
+        <td class="yes">✓</td>
+      </tr>
+      <tr>
+        <td>数据不上传服务器</td>
+        <td class="highlight yes">✓</td>
+        <td class="no">✗</td>
+        <td class="no">✗</td>
+        <td class="no">✗ iCloud同步</td>
+      </tr>
+      <tr>
+        <td>极简界面（无标签/优先级）</td>
+        <td class="highlight yes">✓</td>
+        <td class="no">✗ 复杂</td>
+        <td class="no">✗ 复杂</td>
+        <td class="no">✗</td>
+      </tr>
+      <tr>
+        <td>零广告 / 零追踪</td>
+        <td class="highlight yes">✓</td>
+        <td class="no">✗</td>
+        <td class="yes">✓</td>
+        <td class="yes">✓</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="section-label">常见问题</div>
+  <h2>你可能想知道的</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <h3>真的完全免费吗？</h3>
+      <p>是的。没有订阅，没有内购，没有"高级版"。下载即是全功能版本。</p>
+    </div>
+    <div class="faq-item">
+      <h3>我的数据会上传到哪里吗？</h3>
+      <p>不会。不拖没有服务器，你的所有待办事项只存储在你的设备本地，任何人都无法访问，包括开发者。</p>
+    </div>
+    <div class="faq-item">
+      <h3>换手机了怎么办？数据能迁移吗？</h3>
+      <p>可以通过 iPhone 备份恢复数据。这是本地存储的一个取舍——我们认为隐私比跨设备同步更重要。</p>
+    </div>
+    <div class="faq-item">
+      <h3>为什么没有标签、提醒、优先级这些功能？</h3>
+      <p>这是刻意的设计选择。大多数人的拖延问题不是工具不够强大，而是工具太复杂了。不拖只做一件事：帮你记住，然后让你划掉它。</p>
+    </div>
+    <div class="faq-item">
+      <h3>支持 iPad 吗？</h3>
+      <p>支持。不拖专为 iPhone 和 iPad 设计，支持 iOS 17.6 及以上系统。</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Bottom -->
+<section class="cta-bottom">
+  <h2>生活已经够复杂了</h2>
+  <p>让待办这件事，重新变得简单。</p>
+  <a class="appstore-btn" href="https://apps.apple.com/app/id6761042128" target="_blank">
+    <span>Download on the</span>
+    <strong>App Store</strong>
+  </a>
+  <br/>
+  <p style="margin-top:18px; font-size:0.82rem; color: var(--muted);">免费 · 无广告 · 无需注册 · iPhone & iPad</p>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>© 2025 不拖 · 极简待办工具</span>
+  <span>
+    <a href="https://apps.apple.com/app/id6761042128" target="_blank">App Store</a>
+    &nbsp;·&nbsp;
+    <a href="https://privacy.aolifu.org/todo_privacy" target="_blank">隐私政策</a>
+  </span>
+</footer>
+
+</body>
+</html>
